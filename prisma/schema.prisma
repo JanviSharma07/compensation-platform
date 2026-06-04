@@ -1,0 +1,41 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  salaries  Salary[]
+}
+
+model Company {
+  id       String   @id @default(cuid())
+  name     String   @unique
+  slug     String   @unique
+  industry String?
+  salaries Salary[]
+}
+
+model Salary {
+  id         String   @id @default(cuid())
+  userId     String
+  companyId  String
+  role       String
+  level      String
+  location   String
+  baseSalary Float
+  bonus      Float    @default(0)
+  stock      Float    @default(0)
+  totalComp  Float
+  yearsExp   Int
+  createdAt  DateTime @default(now())
+  user       User     @relation(fields: [userId], references: [id])
+  company    Company  @relation(fields: [companyId], references: [id])
+}
